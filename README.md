@@ -1,1 +1,7 @@
 # Master-Thesis-INM-Code
+
+Code projects for my master's thesis at the HFU Furtwangen.
+
+## Main repository
+
+Find my main repository with the writte form of my thesis (using LaTeX) [here](https://github.com/Bassadin/Master-Thesis-INM).
