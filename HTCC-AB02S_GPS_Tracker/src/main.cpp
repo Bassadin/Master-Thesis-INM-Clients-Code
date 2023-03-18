@@ -11,7 +11,7 @@ Air530Class GPS;
 extern SSD1306Wire display;
 
 // when gps waked, if in GPS_UPDATE_TIMEOUT, gps not fixed then into low power mode
-#define GPS_UPDATE_TIMEOUT 120000
+#define GPS_UPDATE_TIMEOUT 240000
 
 // once fixed, GPS_CONTINUE_TIME later into low power mode
 #define GPS_CONTINUE_TIME 10000
@@ -30,9 +30,9 @@ uint8_t appEui[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 uint8_t appKey[] = {0x6D, 0x2C, 0x4B, 0x70, 0x61, 0xC7, 0xED, 0xD1, 0x6A, 0xB0, 0xA9, 0x49, 0xCE, 0x98, 0x7A, 0x27};
 
 /* ABP para*/
-uint8_t nwkSKey[] = { 0x15, 0xb1, 0xd0, 0xef, 0xa4, 0x63, 0xdf, 0xbe, 0x3d, 0x11, 0x18, 0x1e, 0x1e, 0xc7, 0xda,0x85 };
-uint8_t appSKey[] = { 0xd7, 0x2c, 0x78, 0x75, 0x8c, 0xdc, 0xca, 0xbf, 0x55, 0xee, 0x4a, 0x77, 0x8d, 0x16, 0xef,0x67 };
-uint32_t devAddr =  ( uint32_t )0x007e6ae1;
+uint8_t nwkSKey[] = {0x15, 0xb1, 0xd0, 0xef, 0xa4, 0x63, 0xdf, 0xbe, 0x3d, 0x11, 0x18, 0x1e, 0x1e, 0xc7, 0xda, 0x85};
+uint8_t appSKey[] = {0xd7, 0x2c, 0x78, 0x75, 0x8c, 0xdc, 0xca, 0xbf, 0x55, 0xee, 0x4a, 0x77, 0x8d, 0x16, 0xef, 0x67};
+uint32_t devAddr = (uint32_t)0x007e6ae1;
 
 /*LoraWan channelsmask, default channels 0-7*/
 uint16_t userChannelsMask[6] = {0x00FF, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000};
@@ -44,7 +44,7 @@ LoRaMacRegion_t loraWanRegion = ACTIVE_REGION;
 DeviceClass_t loraWanClass = LORAWAN_CLASS;
 
 /*the application data transmission duty cycle.  value in [ms].*/
-uint32_t appTxDutyCycle = 60000;
+uint32_t appTxDutyCycle = 30000;
 
 /*OTAA or ABP*/
 bool overTheAirActivation = LORAWAN_NETMODE;
@@ -206,20 +206,28 @@ static void prepareTxFrame(uint8_t port)
     display.init();
     display.clear();
 
+    uint32_t start = millis();
+
     display.setTextAlignment(TEXT_ALIGN_CENTER);
     display.setFont(ArialMT_Plain_16);
     display.drawString(64, 32 - 16 / 2, "GPS Searching...");
+    display.drawString(64, 32 + 8, "remaining: " + String((GPS_UPDATE_TIMEOUT - (millis() - start)) / 1000));
     Serial.println("GPS Searching...");
     display.display();
 
     GPS.begin();
 
-    uint32_t start = millis();
     while ((millis() - start) < GPS_UPDATE_TIMEOUT)
     {
         while (GPS.available() > 0)
         {
             GPS.encode(GPS.read());
+
+            // Show message GPS searching and timeout
+            display.clear();
+            display.drawString(64, 32 - 16, "GPS Searching...");
+            display.drawString(64, 32 + 16, "Timeout in: " + String((GPS_UPDATE_TIMEOUT - (millis() - start)) / 1000));
+            display.display();
         }
         // gps fixed in a second
         if (GPS.location.age() < 1000)
