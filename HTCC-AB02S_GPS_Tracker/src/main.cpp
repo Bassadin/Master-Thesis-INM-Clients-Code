@@ -3,11 +3,11 @@
  */
 #include "LoRaWan_APP.h"
 #include "Arduino.h"
-#include "GPS_Air530.h"
+// #include "GPS_Air530.h"
 #include "GPS_Air530Z.h"
 #include "HT_SSD1306Wire.h"
 
-Air530Class GPS;
+Air530ZClass GPS;
 extern SSD1306Wire display;
 
 // when gps waked, if in GPS_UPDATE_TIMEOUT, gps not fixed then into low power mode
@@ -354,6 +354,20 @@ static void prepareTxFrame(uint8_t port)
 void setup()
 {
     Serial.begin(115200);
+
+    // GPS Mode
+
+    /*three modes supported:
+     * https://github.com/sivaelid/Heltec_AB02S_Mods/blob/master/LoRaWan_OnBoardGPS_Air530_Vaelid.ino
+     * GPS        :    MODE_GPS - this works
+     * GPS+BEIDOU :    MODE_GPS_BEIDOU this works
+     * GPS+GLONASS:    MODE_GPS_GLONASS this works
+     * GPS+GALILEO:    MODE_GPS_GALILEO this does not work
+     * GPS+BEIDOU+GLONASS+GALILEO:   MODE_GPS_MULTI   this does not work
+     * default mode is GPS+BEIDOU.
+     */
+
+    GPS.setmode(MODE_GPS_GLONASS); // GPS+GLONASS
 
 #if (AT_SUPPORT)
     enableAt();
