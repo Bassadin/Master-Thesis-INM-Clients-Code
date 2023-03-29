@@ -291,30 +291,43 @@ static void prepareTxFrame(uint8_t port)
     appData[appDataSize++] = puc[2];
     appData[appDataSize++] = puc[3];
     puc = (unsigned char *)(&lon);
+
     appData[appDataSize++] = puc[0];
     appData[appDataSize++] = puc[1];
     appData[appDataSize++] = puc[2];
     appData[appDataSize++] = puc[3];
     puc = (unsigned char *)(&alt);
+
     appData[appDataSize++] = puc[0];
     appData[appDataSize++] = puc[1];
     appData[appDataSize++] = puc[2];
     appData[appDataSize++] = puc[3];
     puc = (unsigned char *)(&course);
+
     appData[appDataSize++] = puc[0];
     appData[appDataSize++] = puc[1];
     appData[appDataSize++] = puc[2];
     appData[appDataSize++] = puc[3];
     puc = (unsigned char *)(&speed);
+
     appData[appDataSize++] = puc[0];
     appData[appDataSize++] = puc[1];
     appData[appDataSize++] = puc[2];
     appData[appDataSize++] = puc[3];
+
     puc = (unsigned char *)(&hdop);
     appData[appDataSize++] = puc[0];
     appData[appDataSize++] = puc[1];
     appData[appDataSize++] = puc[2];
     appData[appDataSize++] = puc[3];
+
+    // Added this to also send amount of sats
+    puc = (unsigned char *)(&sats);
+    appData[appDataSize++] = puc[0];
+    appData[appDataSize++] = puc[1];
+    appData[appDataSize++] = puc[2];
+    appData[appDataSize++] = puc[3];
+
     appData[appDataSize++] = (uint8_t)(batteryVoltage >> 8);
     appData[appDataSize++] = (uint8_t)batteryVoltage;
 
