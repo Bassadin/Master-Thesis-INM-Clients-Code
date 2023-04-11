@@ -3,15 +3,15 @@
  */
 #include "LoRaWan_APP.h"
 #include "Arduino.h"
-// #include "GPS_Air530.h"
+#include "GPS_Air530.h"
 #include "GPS_Air530Z.h"
 #include "HT_SSD1306Wire.h"
 
-Air530ZClass GPS;
+Air530Class GPS;
 extern SSD1306Wire display;
 
 // when gps waked, if in GPS_UPDATE_TIMEOUT, gps not fixed then into low power mode
-#define GPS_UPDATE_TIMEOUT 240000
+#define GPS_UPDATE_TIMEOUT 120000
 
 // once fixed, GPS_CONTINUE_TIME later into low power mode
 #define GPS_CONTINUE_TIME 10000
@@ -367,7 +367,7 @@ void setup()
      * default mode is GPS+BEIDOU.
      */
 
-    GPS.setmode(MODE_GPS_GLONASS); // GPS+GLONASS
+    // GPS.setmode(MODE_GPS); // GPS+GLONASS
 
 #if (AT_SUPPORT)
     enableAt();
