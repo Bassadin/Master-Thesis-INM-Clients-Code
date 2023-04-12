@@ -14,7 +14,7 @@ extern SSD1306Wire display;
 #define GPS_UPDATE_TIMEOUT 120000
 
 // once fixed, GPS_CONTINUE_TIME later into low power mode
-#define GPS_CONTINUE_TIME 10000
+#define GPS_CONTINUE_TIME 10000 // 10000
 /*
    set LoraWan_RGB to Active,the RGB active in loraWan
    RGB red means sending;
@@ -25,9 +25,9 @@ extern SSD1306Wire display;
 */
 
 /* OTAA para*/
-uint8_t devEui[] = {0x70, 0xB3, 0xD5, 0x7E, 0xD0, 0x05, 0xB2, 0xBF};
+uint8_t devEui[] = {0x70, 0xB3, 0xD5, 0x7E, 0xD0, 0x05, 0xB5, 0x6C};
 uint8_t appEui[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-uint8_t appKey[] = {0x6D, 0x2C, 0x4B, 0x70, 0x61, 0xC7, 0xED, 0xD1, 0x6A, 0xB0, 0xA9, 0x49, 0xCE, 0x98, 0x7A, 0x27};
+uint8_t appKey[] = {0x35, 0x21, 0x8B, 0x8B, 0xD9, 0x03, 0x49, 0xBE, 0xBE, 0x09, 0xA5, 0xB9, 0x77, 0xC9, 0x72, 0x14};
 
 /* ABP para*/
 uint8_t nwkSKey[] = {0x15, 0xb1, 0xd0, 0xef, 0xa4, 0x63, 0xdf, 0xbe, 0x3d, 0x11, 0x18, 0x1e, 0x1e, 0xc7, 0xda, 0x85};
@@ -44,7 +44,7 @@ LoRaMacRegion_t loraWanRegion = ACTIVE_REGION;
 DeviceClass_t loraWanClass = LORAWAN_CLASS;
 
 /*the application data transmission duty cycle.  value in [ms].*/
-uint32_t appTxDutyCycle = 30000;
+uint32_t appTxDutyCycle = 15000;
 
 /*OTAA or ABP*/
 bool overTheAirActivation = LORAWAN_NETMODE;
@@ -59,7 +59,7 @@ bool keepNet = LORAWAN_NET_RESERVE;
 bool isTxConfirmed = LORAWAN_UPLINKMODE;
 
 /* Application port */
-uint8_t appPort = 2;
+uint8_t appPort = 1;
 /*!
   Number of trials to transmit the frame, if the LoRaMAC layer did not
   receive an acknowledgment. The MAC performs a datarate adaptation,
@@ -266,7 +266,7 @@ static void prepareTxFrame(uint8_t port)
         display.display();
         delay(2000);
     }
-    GPS.end();
+    // Air530.end();
     display.clear();
     display.display();
     display.stop();
@@ -353,6 +353,7 @@ static void prepareTxFrame(uint8_t port)
 
 void setup()
 {
+    boardInitMcu();
     Serial.begin(115200);
 
     // GPS Mode
@@ -375,6 +376,8 @@ void setup()
     LoRaWAN.displayMcuInit();
     deviceState = DEVICE_STATE_INIT;
     LoRaWAN.ifskipjoin();
+
+    GPS.begin();
 }
 
 void loop()
@@ -383,9 +386,6 @@ void loop()
     {
     case DEVICE_STATE_INIT:
     {
-#if (LORAWAN_DEVEUI_AUTO)
-        LoRaWAN.generateDeveuiByChipID();
-#endif
 #if (AT_SUPPORT)
         getDevParam();
 #endif
@@ -411,7 +411,7 @@ void loop()
     case DEVICE_STATE_CYCLE:
     {
         // Schedule next packet transmission
-        txDutyCycleTime = appTxDutyCycle + randr(0, APP_TX_DUTYCYCLE_RND);
+        txDutyCycleTime = appTxDutyCycle; //  + randr( 0, APP_TX_DUTYCYCLE_RND );
         LoRaWAN.cycle(txDutyCycleTime);
         deviceState = DEVICE_STATE_SLEEP;
         break;
