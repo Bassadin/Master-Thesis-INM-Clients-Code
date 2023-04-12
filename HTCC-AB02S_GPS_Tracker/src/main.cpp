@@ -11,7 +11,7 @@ Air530Class GPS;
 extern SSD1306Wire display;
 
 // when gps waked, if in GPS_UPDATE_TIMEOUT, gps not fixed then into low power mode
-#define GPS_UPDATE_TIMEOUT 120000
+#define GPS_UPDATE_TIMEOUT 300000
 
 // once fixed, GPS_CONTINUE_TIME later into low power mode
 #define GPS_CONTINUE_TIME 10000 // 10000
@@ -368,7 +368,7 @@ void setup()
      * default mode is GPS+BEIDOU.
      */
 
-    // GPS.setmode(MODE_GPS); // GPS+GLONASS
+    GPS.setmode(MODE_GPS_GLONASS); // GPS+GLONASS
 
 #if (AT_SUPPORT)
     enableAt();
