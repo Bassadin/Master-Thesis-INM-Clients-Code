@@ -19,10 +19,10 @@ extern SSD1306Wire display;
 
 
 // if GPS module is Air530, use this
-// Air530Class GPS;
+Air530Class GPS;
 
 // if GPS module is Air530Z, use this
-Air530ZClass GPS;
+// Air530ZClass GPS;
 
 int fracPart(double val, int n)
 {
