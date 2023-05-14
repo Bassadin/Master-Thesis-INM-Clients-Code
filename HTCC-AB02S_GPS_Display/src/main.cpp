@@ -2,15 +2,16 @@
 #include "Arduino.h"
 #include "GPS_Air530.h"
 #include "GPS_Air530Z.h"
+#include <Wire.h>               
 #include "HT_SSD1306Wire.h"
 
-extern SSD1306Wire display;
+SSD1306Wire  display(0x3c, 500000, SDA, SCL, GEOMETRY_128_64, GPIO10); // addr , freq , SDA, SCL, resolution , rst
 
 // if GPS module is Air530, use this
-// Air530Class GPS;
+Air530Class GPS;
 
 // if GPS module is Air530Z, use this
-Air530ZClass GPS;
+// Air530ZClass GPS;
 
 int fracPart(double val, int n)
 {
