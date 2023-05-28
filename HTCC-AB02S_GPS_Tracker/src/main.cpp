@@ -11,7 +11,7 @@ Air530Class GPS;
 extern SSD1306Wire display;
 
 // when gps waked, if in GPS_UPDATE_TIMEOUT, gps not fixed then into low power mode
-#define GPS_UPDATE_TIMEOUT 300000
+#define GPS_UPDATE_TIMEOUT 500000
 
 // once fixed, GPS_CONTINUE_TIME later into low power mode
 #define GPS_CONTINUE_TIME 10000 // 10000
@@ -143,7 +143,7 @@ void displayGPSInof()
     display.display();
 }
 
-void printGPSInof()
+void printGPSInfo()
 {
     Serial.print("Date/Time: ");
     if (GPS.date.isValid())
@@ -228,6 +228,13 @@ static void prepareTxFrame(uint8_t port)
             display.drawString(64, 32 - 16, "GPS Searching...");
             display.drawString(64, 32 + 16, "Timeout in: " + String((GPS_UPDATE_TIMEOUT - (millis() - start)) / 1000));
             display.display();
+
+            // Print gps info to serial output every 10 seconds
+            if ((millis() - start) % 10000 == 0)
+            {
+                Serial.print("GPS INFO:");
+                printGPSInfo();
+            }
         }
         // gps fixed in a second
         if (GPS.location.age() < 1000)
@@ -251,7 +258,7 @@ static void prepareTxFrame(uint8_t port)
             if ((millis() - start) > printinfo)
             {
                 printinfo += 1000;
-                printGPSInof();
+                printGPSInfo();
                 displayGPSInof();
             }
         }
